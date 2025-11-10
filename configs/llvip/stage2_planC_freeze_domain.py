@@ -1,41 +1,24 @@
-"""Stage2 KAIST Full Training - Conservative Strategy (12 epochs)
+"""Stage2 KAIST - Plan C: Freeze Domain Alignment (6 epochs)
 
-优化策略（针对sanity run的mAP下降问题）：
-1. 降低学习率：3e-4 → 2.5e-4（与Stage1一致）
-2. 延长warmup：400 iters → 500 iters
-3. 温和domain weight：target 0.1 → 0.08, warmup 2 → 4 epochs
-4. 保存更多checkpoint：max_keep_ckpts=5
+应急方案：如果方案A在epoch 4-6时mAP<0.55，立即切换到此配置
 
-预期性能：
-- 目标mAP: 0.68-0.72 @ epoch 12
-- 训练时间: ~30小时 (12 epochs × 2.5h/epoch)
-- 内存占用: 2145 MB训练, 740 MB验证（已验证稳定）
+策略：
+1. 完全关闭域对齐（domain_weight=0.0, enable_mmd=False）
+2. 专注优化检测性能
+3. 从epoch_3.pth或best_checkpoint恢复训练
+4. 训练6 epochs后评估，如果mAP>0.65再启用域对齐
 
-对比sanity run问题：
-- Sanity run: epoch1 62.8% → epoch3 55.0% (下降12.4%)
-- 分析：domain_weight快速增长(0.05→0.1)导致短期检测性能牺牲
-- 解决：更低target(0.08) + 更长warmup(4 epochs) = 平滑过渡
+预期：
+- 目标mAP: 0.65-0.68 @ epoch 6 (相当于累计9 epochs)
+- 之后可以考虑Phase 2精调（启用域对齐）
 """
-
-# Explicitly import custom modules to ensure registry
-custom_imports = dict(
-    imports=[
-        'mmdet.models.data_preprocessors.paired_preprocessor',
-        'mmdet.models.macldhnmsp',
-        'mmdet.models.roi_heads.aligned_roi_head',
-        'mmdet.models.utils.domain_aligner',
-        'mmdet.engine.hooks.domain_weight_warmup_hook',
-        'mmdet.datasets.kaist'
-    ],
-    allow_failed_imports=False
-)
 
 from mmengine.config import read_base
 
 with read_base():
     from .._base_.default_runtime import *  # noqa
 
-# Model definition
+# Model definition - FREEZE DOMAIN ALIGNMENT
 model = dict(
     type='FasterRCNN',
     data_preprocessor=dict(
@@ -97,7 +80,7 @@ model = dict(
             enable_msp=True,
             enable_dhn=True,
             enable_domain_align=False,
-            domain_weight=0.08,  # 降低到0.08（sanity run中0.1导致mAP下降）
+            domain_weight=0.0,  # ⚠️ FROZEN: 完全关闭域对齐
             with_avg_pool=True,
             in_channels=256,
             fc_out_channels=1024,
@@ -124,7 +107,7 @@ model = dict(
             mmd_cfg=dict(
                 kernel='rbf',
                 num_layers=2,
-                loss_weight=0.1
+                loss_weight=0.0  # ⚠️ FROZEN: MMD loss权重也设为0
             )
         )
     ),
@@ -251,7 +234,6 @@ val_dataloader = dict(
 
 test_dataloader = val_dataloader
 
-# Evaluator
 val_evaluator = dict(
     type='VOCMetric',
     metric='mAP',
@@ -259,52 +241,51 @@ val_evaluator = dict(
 )
 test_evaluator = val_evaluator
 
-# Training schedule
+# Training schedule - 6 epochs for Phase 1
 train_cfg = dict(
     type='EpochBasedTrainLoop',
-    max_epochs=12,
+    max_epochs=6,
     val_interval=1
 )
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
-# Optimizer - 降低学习率到2.5e-4（与Stage1一致）
+# Optimizer - 保持2.5e-4学习率
 optim_wrapper = dict(
     type='OptimWrapper',
-    optimizer=dict(type='AdamW', lr=2.5e-4, weight_decay=0.01),  # 从3e-4降低
+    optimizer=dict(type='AdamW', lr=2.5e-4, weight_decay=0.01),
     paramwise_cfg=dict(
         bias_decay_mult=0.0,
         norm_decay_mult=0.0,
         custom_keys={
-            'backbone': dict(lr_mult=0.1)  # backbone更低学习率
+            'backbone': dict(lr_mult=0.1)
         }
     ),
     clip_grad=dict(max_norm=5.0, norm_type=2)
 )
 
-# FP16 training
 fp16 = dict(loss_scale='dynamic')
 
-# Learning rate schedule - 延长warmup到500 iters
+# Learning rate schedule
 param_scheduler = [
     dict(
         type='LinearLR',
         start_factor=0.001,
         by_epoch=False,
         begin=0,
-        end=500  # 从400增加到500 iters
+        end=500
     ),
     dict(
         type='CosineAnnealingLR',
-        eta_min=2.5e-5,  # 最小lr = 初始lr的10%
+        eta_min=2.5e-5,
         begin=1,
-        end=12,
+        end=6,
         by_epoch=True,
         convert_to_iter_based=True
     )
 ]
 
-# Hooks configuration
+# Hooks - 移除DomainWeightWarmupHook
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     logger=dict(type='LoggerHook', interval=50),
@@ -314,24 +295,15 @@ default_hooks = dict(
         interval=1,
         save_best='pascal_voc/mAP',
         rule='greater',
-        max_keep_ckpts=5  # 保存top-5模型
+        max_keep_ckpts=5
     ),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     visualization=dict(type='DetVisualizationHook')
 )
 
 custom_hooks = [
-    dict(type='TSNEVisualHook', interval=1, num_samples=200),
-    # 更温和的domain weight warmup
-    dict(
-        type='DomainWeightWarmupHook',
-        attr_path='roi_head.macl_head.domain_weight',
-        start=0.0,
-        target=0.08,  # 从0.1降低到0.08
-        warmup_epochs=4,  # 从2增加到4 epochs
-        mode='linear',
-        verbose=True
-    )
+    dict(type='TSNEVisualHook', interval=1, num_samples=200)
+    # ⚠️ 注意：移除了DomainWeightWarmupHook
 ]
 
 # Runtime settings
@@ -350,9 +322,11 @@ visualizer = dict(
 
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=True)
 log_level = 'INFO'
-load_from = 'work_dirs/stage1_longrun_full/epoch_21.pth'
+
+# ⚠️ 从方案A的checkpoint恢复（手动设置为epoch_3.pth或best checkpoint）
+# 需要根据实际情况修改这个路径
+load_from = 'work_dirs/stage2_kaist_full_conservative/best_pascal_voc_mAP_epoch_3.pth'
 resume = False
 
-# Launcher
 launcher = 'none'
-work_dir = './work_dirs/stage2_kaist_full_conservative'
+work_dir = './work_dirs/stage2_planC_freeze_domain'
