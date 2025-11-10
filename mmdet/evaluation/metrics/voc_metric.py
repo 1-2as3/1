@@ -50,11 +50,13 @@ class VOCMetric(BaseMetric):
                  proposal_nums: Sequence[int] = (100, 300, 1000),
                  eval_mode: str = '11points',
                  collect_device: str = 'cpu',
+                 nproc: int = 1,  # 🔴 新增：Windows兼容性，默认单进程
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.iou_thrs = [iou_thrs] if isinstance(iou_thrs, float) \
             else iou_thrs
         self.scale_ranges = scale_ranges
+        self.nproc = nproc  # 🔴 保存nproc参数
         # voc evaluation metrics
         if not isinstance(metric, str):
             assert len(metric) == 1
@@ -151,6 +153,7 @@ class VOCMetric(BaseMetric):
                     dataset=dataset_name,
                     logger=logger,
                     eval_mode=self.eval_mode,
+                    nproc=self.nproc,  # 🔴 关键：使用配置的nproc值
                     use_legacy_coordinate=True)
                 mean_aps.append(mean_ap)
                 eval_results[f'AP{int(iou_thr * 100):02d}'] = round(mean_ap, 3)

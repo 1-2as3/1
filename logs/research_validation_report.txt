@@ -1,0 +1,352 @@
+=== 预检查开始 ===
+[ENV] 依赖可用：torch
+[ENV] 依赖可用：mmcv
+[ENV] 依赖可用：mmdet
+[ENV] 依赖可用：mmengine
+
+--- GPU / 显存 ---
+[GPU] GPU0 NVIDIA GeForce RTX 4060 Ti: Free 14.87 GB / Total 16.00 GB
+[GPU] 建议 batch size ≈ 4~8；可从 4 起步。
+
+--- STAGE1 ---
+[WARN] 权重文件不存在，跳过加载：work_dirs\stage1_llvip_pretrain\epoch_latest.pth
+=== Parameter Trainability (stage=stage1) ===
+Total: 41,398,425 | Trainable: 41,173,081 (99.46%)
+Backbone: 23,508,032 | Trainable: 23,282,688
+Neck: 3,344,899 | Trainable: 3,344,899
+ROI Head: 13,951,559 | Trainable: 13,951,559
+MACL: 0 | Trainable: 0
+MSP: 0 | Trainable: 0
+DHN: 0 | Trainable: 0
+MAN: 0 | Trainable: 0
+Others: 593,935 | Trainable: 593,935
+
+[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}
+[BN] total=54, frozen=11
+参数可训练性检查完成。
+[PARAM] stage1_llvip_pretrain.py 检查完成。
+[WARN] 权重文件不存在，跳过加载：work_dirs\stage1_llvip_pretrain\epoch_latest.pth
+[INFO] 未运行真实 batch，或运行失败，继续进行占位式梯度检查。
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+梯度流检查完成。
+[GRAD] 梯度流检查完成（如未提供 batch 则为占位）。
+
+--- STAGE2 ---
+[INFO] 已自动合并基础模型字段，补齐缺失键：['train_cfg', 'rpn_head', 'test_cfg', 'backbone']
+=== Parameter Trainability (stage=stage2) ===
+Total: 41,398,425 | Trainable: 41,173,081 (99.46%)
+Backbone: 23,508,032 | Trainable: 23,282,688
+Neck: 3,344,899 | Trainable: 3,344,899
+ROI Head: 13,951,559 | Trainable: 13,951,559
+MACL: 0 | Trainable: 0
+MSP: 0 | Trainable: 0
+DHN: 0 | Trainable: 0
+MAN: 0 | Trainable: 0
+Others: 593,935 | Trainable: 593,935
+
+[WARN] Stage2 期望 backbone 冻结，但检测到可训练参数 > 0
+[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}
+[BN] total=54, frozen=11
+参数可训练性检查完成。
+[PARAM] stage2_kaist_domain_ft_nodomain_freezehook.py 检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['test_cfg', 'backbone', 'train_cfg', 'rpn_head']
+[INFO] 未运行真实 batch，或运行失败，继续进行占位式梯度检查。
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+梯度流检查完成。
+[GRAD] 梯度流检查完成（如未提供 batch 则为占位）。
+
+--- STAGE3 ---
+[INFO] 已自动合并基础模型字段，补齐缺失键：['backbone', 'rpn_head', 'test_cfg', 'train_cfg']
+=== Parameter Trainability (stage=stage3) ===
+Total: 41,398,425 | Trainable: 41,173,081 (99.46%)
+Backbone: 23,508,032 | Trainable: 23,282,688
+Neck: 3,344,899 | Trainable: 3,344,899
+ROI Head: 13,951,559 | Trainable: 13,951,559
+MACL: 0 | Trainable: 0
+MSP: 0 | Trainable: 0
+DHN: 0 | Trainable: 0
+MAN: 0 | Trainable: 0
+Others: 593,935 | Trainable: 593,935
+
+[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}
+[BN] total=54, frozen=11
+参数可训练性检查完成。
+[PARAM] stage3_joint_multimodal.py 检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['train_cfg', 'backbone', 'rpn_head', 'test_cfg']
+[INFO] 未运行真实 batch，或运行失败，继续进行占位式梯度检查。
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+梯度流检查完成。
+[GRAD] 梯度流检查完成（如未提供 batch 则为占位）。
+
+--- 数据集加载（占位） ---
+[DATA] LLVIP: 未提供数据路径，跳过加载验证。
+[DATA] KAIST: 已检测到路径 C:\KAIST_processed。如需真实 batch 前向，请提供相应 config/dataloader 设置。
+[DATA] M3FD: 未提供数据路径，跳过加载验证。
+
+--- 建议与后续 ---
+
+=== 预检查总结 ===
+✅ 所有模块接入与训练逻辑检查基本通过（部分项目可能为占位检测）。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['rpn_head', 'backbone', 'train_cfg', 'test_cfg']
+=== Parameter Trainability (stage=stage2) ===
+Total: 41,398,425 | Trainable: 41,173,081 (99.46%)
+Backbone: 23,508,032 | Trainable: 23,282,688
+Neck: 3,344,899 | Trainable: 3,344,899
+ROI Head: 13,951,559 | Trainable: 13,951,559
+MACL: 0 | Trainable: 0
+MSP: 0 | Trainable: 0
+DHN: 0 | Trainable: 0
+MAN: 0 | Trainable: 0
+Others: 593,935 | Trainable: 593,935
+
+[WARN] Stage2 期望 backbone 冻结，但检测到可训练参数 > 0
+[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}
+[BN] total=54, frozen=11
+参数可训练性检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['backbone', 'train_cfg', 'test_cfg', 'rpn_head']
+[INFO] 已自动合并基础模型字段，补齐缺失键：['test_cfg', 'train_cfg', 'rpn_head', 'backbone']
+[INFO] 训练集缺少 pipeline，尝试回退到 test/val 数据集用于单 batch 检查。
+[WARN] 实测 1 个 batch 前反向失败：'PackDetInputs is not in the mmengine::transform registry. Please check whether the value of `PackDetInputs` is correct or it was registered as expected. More details can be found at https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#import-the-custom-module'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['backbone', 'test_cfg', 'rpn_head', 'train_cfg']
+[INFO] 训练集缺少 pipeline，尝试回退到 test/val 数据集用于单 batch 检查。
+[WARN] 实测 1 个 batch 前反向失败：'PackDetInputs is not in the mmengine::transform registry. Please check whether the value of `PackDetInputs` is correct or it was registered as expected. More details can be found at https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#import-the-custom-module'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['rpn_head', 'train_cfg', 'backbone', 'test_cfg']
+[WARN] 实测 1 个 batch 前反向失败：'PackDetInputs is not in the mmengine::transform registry. Please check whether the value of `PackDetInputs` is correct or it was registered as expected. More details can be found at https://mmengine.readthedocs.io/en/latest/advanced_tutorials/config.html#import-the-custom-module'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['test_cfg', 'backbone', 'rpn_head', 'train_cfg']
+=== Parameter Trainability (stage=stage2) ===
+Total: 41,398,425 | Trainable: 41,173,081 (99.46%)
+Backbone: 23,508,032 | Trainable: 23,282,688
+Neck: 3,344,899 | Trainable: 3,344,899
+ROI Head: 13,951,559 | Trainable: 13,951,559
+MACL: 0 | Trainable: 0
+MSP: 0 | Trainable: 0
+DHN: 0 | Trainable: 0
+MAN: 0 | Trainable: 0
+Others: 593,935 | Trainable: 593,935
+
+[WARN] Stage2 期望 backbone 冻结，但检测到可训练参数 > 0
+[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}
+[BN] total=54, frozen=11
+参数可训练性检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['train_cfg', 'backbone', 'rpn_head', 'test_cfg']
+[WARN] 实测 1 个 batch 前反向失败：BaseDetector.forward() got an unexpected keyword argument 'visible'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['rpn_head', 'test_cfg', 'backbone', 'train_cfg']
+[WARN] 实测 1 个 batch 前反向失败：BaseDetector.forward() got an unexpected keyword argument 'visible'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Input type (torch.cuda.ByteTensor) and weight type (torch.cuda.FloatTensor) should be the same
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：'pad_shape'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 二次前向仍失败：
+[WARN] 实测 1 个 batch 前反向失败：'pad_shape'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[DEBUG] batch dict keys: ['inputs', 'data_samples']
+[DEBUG] inputs shape=torch.Size([1, 3, 512, 640]) dtype=torch.uint8
+[DEBUG] first data_sample meta keys=['img_shape', 'flip', 'modality_pair', 'vis_img_path', 'flip_direction', 'ori_shape', 'img_path', 'ir_img_path', 'img_id', 'scale_factor']
+[WARN] 二次前向仍失败：
+[WARN] 实测 1 个 batch 前反向失败：'pad_shape'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[DEBUG] batch dict keys: ['inputs', 'data_samples']
+[DEBUG] inputs shape=torch.Size([1, 3, 512, 640]) dtype=torch.uint8
+[DEBUG] first data_sample meta keys=['flip_direction', 'scale_factor', 'img_path', 'modality_pair', 'vis_img_path', 'img_shape', 'ir_img_path', 'flip', 'ori_shape', 'img_id']
+[WARN] 二次前向仍失败：
+[WARN] 实测 1 个 batch 前反向失败：
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['backbone', 'rpn_head', 'test_cfg', 'train_cfg']
+[DEBUG] batch dict keys: ['visible', 'infrared', 'visible_path', 'infrared_path', 'base_id', 'instances', 'metainfo']
+[WARN] 实测 1 个 batch 前反向失败：BaseDetector.forward() got an unexpected keyword argument 'visible'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['rpn_head', 'backbone', 'test_cfg', 'train_cfg']
+[INFO] 训练集缺少 pipeline，尝试回退到 test/val 数据集用于单 batch 检查。
+[WARN] 实测 1 个 batch 前反向失败：BaseDataset.__init__() got an unexpected keyword argument 'ann_subdir'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[DEBUG] batch dict keys: ['inputs', 'data_samples']
+[DEBUG] inputs shape=torch.Size([1, 3, 512, 640]) dtype=torch.uint8
+[DEBUG] first data_sample meta keys=['img_shape', 'flip', 'flip_direction', 'scale_factor', 'img_path', 'img_id', 'vis_img_path', 'ori_shape', 'modality_pair', 'ir_img_path']
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[DEBUG] batch dict keys: ['inputs', 'data_samples']
+[DEBUG] inputs shape=torch.Size([1, 3, 512, 640]) dtype=torch.uint8
+[DEBUG] first data_sample meta keys=['flip_direction', 'vis_img_path', 'modality_pair', 'img_path', 'img_shape', 'ir_img_path', 'scale_factor', 'img_id', 'ori_shape', 'flip']
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[DEBUG] batch dict keys: ['inputs', 'data_samples']
+[DEBUG] inputs shape=torch.Size([1, 3, 512, 640]) dtype=torch.uint8
+[DEBUG] first data_sample meta keys=['ori_shape', 'flip_direction', 'img_shape', 'scale_factor', 'modality_pair', 'img_path', 'vis_img_path', 'flip', 'img_id', 'ir_img_path']
+[OK] 梯度图已保存：logs\grad_flow_stage1.png
+[STATS] 有梯度参数数：149 / 155
+[OK] 实测 1 batch 完成，loss=12.560860
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：'pad_shape'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] Dataset built. length=65, starting first batch...
+[WARN] 实测 1 个 batch 前反向失败：AssertionError()
+Traceback (most recent call last):
+  File "C:\Users\Xinyu\mmdetection\tools\grad_flow_check.py", line 327, in main
+    losses = model(inputs, data_samples, mode='loss')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\torch\nn\modules\module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\detectors\base.py", line 92, in forward
+    return self.loss(inputs, data_samples)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\detectors\two_stage.py", line 276, in loss
+    roi_losses = self.roi_head.loss(x, rpn_results_list,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\roi_heads\standard_roi_head.py", line 227, in loss
+    sampling_result = self.bbox_sampler.sample(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\task_modules\samplers\base_sampler.py", line 107, in sample
+    priors = cat_boxes([gt_bboxes_, priors], dim=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\structures\bbox\transforms.py", line 370, in cat_boxes
+    return data_list[0].cat(data_list, dim=dim)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\structures\bbox\base_boxes.py", line 338, in cat
+    assert all(isinstance(boxes, cls) for boxes in box_list)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] Dataset built. length=65, starting first batch...
+[WARN] 实测 1 个 batch 前反向失败：AssertionError()
+Traceback (most recent call last):
+  File "C:\Users\Xinyu\mmdetection\tools\grad_flow_check.py", line 337, in main
+    losses = model(inputs, data_samples, mode='loss')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\torch\nn\modules\module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\detectors\base.py", line 92, in forward
+    return self.loss(inputs, data_samples)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\detectors\two_stage.py", line 276, in loss
+    roi_losses = self.roi_head.loss(x, rpn_results_list,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\roi_heads\standard_roi_head.py", line 227, in loss
+    sampling_result = self.bbox_sampler.sample(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\models\task_modules\samplers\base_sampler.py", line 107, in sample
+    priors = cat_boxes([gt_bboxes_, priors], dim=0)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\structures\bbox\transforms.py", line 370, in cat_boxes
+    return data_list[0].cat(data_list, dim=dim)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\users\xinyu\mmdetection\mmdet\structures\bbox\base_boxes.py", line 338, in cat
+    assert all(isinstance(boxes, cls) for boxes in box_list)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Input type (torch.cuda.ByteTensor) and weight type (torch.cuda.FloatTensor) should be the same
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：'pad_shape'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：'pad_shape'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[INFO] 已自动合并基础模型字段，补齐缺失键：['backbone', 'train_cfg', 'rpn_head', 'test_cfg']
+[WARN] 实测 1 个 batch 前反向失败：BaseDetector.forward() got an unexpected keyword argument 'visible'
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same or input should be a MKLDNN tensor and weight is a dense tensor
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument weight in method wrapper_CUDA___slow_conv2d_forward)
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。
+[WARN] 实测 1 个 batch 前反向失败：expected scalar type Byte but found Float
+[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）
+[INFO] 未跑实测 batch（可能因数据集未配置或构建失败）
+梯度流检查完成。

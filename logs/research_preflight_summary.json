@@ -1,0 +1,138 @@
+{
+  "env": {
+    "python": "3.11.14 | packaged by conda-forge | (main, Oct 22 2025, 22:35:28) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "gpu": {
+    "available": true,
+    "devices": [
+      {
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 4060 Ti",
+        "free_bytes": 15964569600,
+        "total_bytes": 17175150592
+      }
+    ]
+  },
+  "stages": {
+    "stage1": {
+      "param_check": {
+        "ok": true,
+        "code": 0,
+        "stdout": "[RoIHead] modules active: MACL=True, MSP=True, DHN=False, DomainAlign=False\n  [OK] MACLHead initialized with defaults\n  [INFO] MSP module is typically handled by FPN neck\n[WARN] 权重文件不存在，跳过加载：work_dirs\\stage1_llvip_pretrain\\epoch_latest.pth\n=== Parameter Trainability (stage=stage1) ===\nTotal: 41,398,425 | Trainable: 41,173,081 (99.46%)\nBackbone: 23,508,032 | Trainable: 23,282,688\nNeck: 3,344,899 | Trainable: 3,344,899\nROI Head: 13,951,559 | Trainable: 13,951,559\nMACL: 0 | Trainable: 0\nMSP: 0 | Trainable: 0\nDHN: 0 | Trainable: 0\nMAN: 0 | Trainable: 0\nOthers: 593,935 | Trainable: 593,935\n\n[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}\n[BN] total=54, frozen=11\n参数可训练性检查完成。\n",
+        "stderr": "",
+        "cmd": [
+          "C:\\Users\\Xinyu\\.conda\\envs\\py311\\python.exe",
+          "tools\\param_check.py",
+          "configs\\llvip\\stage1_llvip_pretrain.py",
+          "--checkpoint",
+          "work_dirs\\stage1_llvip_pretrain\\epoch_latest.pth",
+          "--stage",
+          "stage1"
+        ]
+      },
+      "grad_flow": {
+        "ok": true,
+        "code": 0,
+        "stdout": "[RoIHead] modules active: MACL=True, MSP=True, DHN=False, DomainAlign=False\n  [OK] MACLHead initialized with defaults\n  [INFO] MSP module is typically handled by FPN neck\n[WARN] 权重文件不存在，跳过加载：work_dirs\\stage1_llvip_pretrain\\epoch_latest.pth\n[INFO] 未运行真实 batch，或运行失败，继续进行占位式梯度检查。\n[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）\n梯度流检查完成。\n",
+        "stderr": "",
+        "cmd": [
+          "C:\\Users\\Xinyu\\.conda\\envs\\py311\\python.exe",
+          "tools\\grad_flow_check.py",
+          "configs\\llvip\\stage1_llvip_pretrain.py",
+          "--stage",
+          "stage1",
+          "--checkpoint",
+          "work_dirs\\stage1_llvip_pretrain\\epoch_latest.pth"
+        ]
+      },
+      "loss_report": {
+        "ok": false,
+        "reason": "no log provided"
+      }
+    },
+    "stage2": {
+      "param_check": {
+        "ok": true,
+        "code": 0,
+        "stdout": "[INFO] 已自动合并基础模型字段，补齐缺失键：['train_cfg', 'rpn_head', 'test_cfg', 'backbone']\n[RoIHead] modules active: MACL=True, MSP=True, DHN=True, DomainAlign=False\n  [OK] MACLHead initialized from config\n  [INFO] MSP module is typically handled by FPN neck\n  [INFO] DHN sampler is typically integrated in MACLHead\n=== Parameter Trainability (stage=stage2) ===\nTotal: 41,398,425 | Trainable: 41,173,081 (99.46%)\nBackbone: 23,508,032 | Trainable: 23,282,688\nNeck: 3,344,899 | Trainable: 3,344,899\nROI Head: 13,951,559 | Trainable: 13,951,559\nMACL: 0 | Trainable: 0\nMSP: 0 | Trainable: 0\nDHN: 0 | Trainable: 0\nMAN: 0 | Trainable: 0\nOthers: 593,935 | Trainable: 593,935\n\n[WARN] Stage2 期望 backbone 冻结，但检测到可训练参数 > 0\n[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}\n[BN] total=54, frozen=11\n参数可训练性检查完成。\n",
+        "stderr": "",
+        "cmd": [
+          "C:\\Users\\Xinyu\\.conda\\envs\\py311\\python.exe",
+          "tools\\param_check.py",
+          "configs\\llvip\\stage2_kaist_domain_ft_nodomain_freezehook.py",
+          "--stage",
+          "stage2"
+        ]
+      },
+      "grad_flow": {
+        "ok": true,
+        "code": 0,
+        "stdout": "[INFO] 已自动合并基础模型字段，补齐缺失键：['test_cfg', 'backbone', 'train_cfg', 'rpn_head']\n[RoIHead] modules active: MACL=True, MSP=True, DHN=True, DomainAlign=False\n  [OK] MACLHead initialized from config\n  [INFO] MSP module is typically handled by FPN neck\n  [INFO] DHN sampler is typically integrated in MACLHead\n[INFO] 未运行真实 batch，或运行失败，继续进行占位式梯度检查。\n[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）\n梯度流检查完成。\n",
+        "stderr": "",
+        "cmd": [
+          "C:\\Users\\Xinyu\\.conda\\envs\\py311\\python.exe",
+          "tools\\grad_flow_check.py",
+          "configs\\llvip\\stage2_kaist_domain_ft_nodomain_freezehook.py",
+          "--stage",
+          "stage2"
+        ]
+      },
+      "loss_report": {
+        "ok": false,
+        "reason": "no log provided"
+      }
+    },
+    "stage3": {
+      "param_check": {
+        "ok": true,
+        "code": 0,
+        "stdout": "[INFO] 已自动合并基础模型字段，补齐缺失键：['backbone', 'rpn_head', 'test_cfg', 'train_cfg']\n[RoIHead] modules active: MACL=True, MSP=True, DHN=True, DomainAlign=False\n  [OK] MACLHead initialized from config\n  [INFO] MSP module is typically handled by FPN neck\n  [INFO] DHN sampler is typically integrated in MACLHead\n=== Parameter Trainability (stage=stage3) ===\nTotal: 41,398,425 | Trainable: 41,173,081 (99.46%)\nBackbone: 23,508,032 | Trainable: 23,282,688\nNeck: 3,344,899 | Trainable: 3,344,899\nROI Head: 13,951,559 | Trainable: 13,951,559\nMACL: 0 | Trainable: 0\nMSP: 0 | Trainable: 0\nDHN: 0 | Trainable: 0\nMAN: 0 | Trainable: 0\nOthers: 593,935 | Trainable: 593,935\n\n[LAMBDA] {'lambda1': 1.0, 'lambda2': 0.5, 'lambda3': 0.1}\n[BN] total=54, frozen=11\n参数可训练性检查完成。\n",
+        "stderr": "",
+        "cmd": [
+          "C:\\Users\\Xinyu\\.conda\\envs\\py311\\python.exe",
+          "tools\\param_check.py",
+          "configs\\llvip\\stage3_joint_multimodal.py",
+          "--stage",
+          "stage3"
+        ]
+      },
+      "grad_flow": {
+        "ok": true,
+        "code": 0,
+        "stdout": "[INFO] 已自动合并基础模型字段，补齐缺失键：['train_cfg', 'backbone', 'rpn_head', 'test_cfg']\n[RoIHead] modules active: MACL=True, MSP=True, DHN=True, DomainAlign=False\n  [OK] MACLHead initialized from config\n  [INFO] MSP module is typically handled by FPN neck\n  [INFO] DHN sampler is typically integrated in MACLHead\n[INFO] 未运行真实 batch，或运行失败，继续进行占位式梯度检查。\n[WARN] 未能生成梯度图（可能未进行反向传播或无梯度）\n梯度流检查完成。\n",
+        "stderr": "",
+        "cmd": [
+          "C:\\Users\\Xinyu\\.conda\\envs\\py311\\python.exe",
+          "tools\\grad_flow_check.py",
+          "configs\\llvip\\stage3_joint_multimodal.py",
+          "--stage",
+          "stage3"
+        ]
+      },
+      "loss_report": {
+        "ok": false,
+        "reason": "no log provided"
+      }
+    }
+  },
+  "datasets": {
+    "LLVIP": {
+      "ok": false,
+      "reason": "no path"
+    },
+    "KAIST": {
+      "ok": true,
+      "note": "placeholder"
+    },
+    "M3FD": {
+      "ok": false,
+      "reason": "no path"
+    }
+  },
+  "pass": true,
+  "defects": [
+    "dataset_check:LLVIP",
+    "dataset_check:M3FD"
+  ],
+  "suggestions": []
+}

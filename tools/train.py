@@ -10,6 +10,7 @@ from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
 from mmdet.utils import setup_cache_size_limit_of_dynamo
+from mmdet.utils import register_all_modules
 
 
 def parse_args():
@@ -65,6 +66,15 @@ def main():
     # Reduce the number of repeated compilations and improve
     # training speed.
     setup_cache_size_limit_of_dynamo()
+
+    # Ensure all mmdet modules (datasets/transforms/hooks) are registered
+    # so that pipeline entries like PackDetInputs are available.
+    try:
+        register_all_modules(init_default_scope=True)
+    except Exception as _e:
+        print_log(
+            f"[WARN] register_all_modules failed early, continue: {_e}",
+            logger='current')
 
     # load config
     cfg = Config.fromfile(args.config)
@@ -124,6 +134,23 @@ def main():
         # build customized runner from the registry
         # if 'runner_type' is set in the cfg
         runner = RUNNERS.build(cfg)
+
+    # 训练前打印关键参数（调试用）
+    print("\n" + "="*60)
+    print("[DEBUG] Training Configuration:")
+    try:
+        # 从配置中读取学习率
+        if hasattr(cfg, 'optim_wrapper') and 'optimizer' in cfg.optim_wrapper:
+            print(f"  - Learning Rate: {cfg.optim_wrapper.optimizer.lr:.2e}")
+        # 打印训练参数
+        print(f"  - Max Epochs: {cfg.train_cfg.max_epochs}")
+        print(f"  - Batch Size: {cfg.train_dataloader.batch_size}")
+        print(f"  - Optimizer: {cfg.optim_wrapper.optimizer.type}")
+        if 'clip_grad' in cfg.optim_wrapper:
+            print(f"  - Gradient Clipping: max_norm={cfg.optim_wrapper.clip_grad.max_norm}")
+    except Exception as e:
+        print(f"  [WARN] Could not print all config details: {e}")
+    print("="*60 + "\n")
 
     # start training
     runner.train()

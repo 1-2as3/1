@@ -72,6 +72,8 @@ class FPN(BaseModule):
         in_channels: List[int],
         out_channels: int,
         num_outs: int,
+        use_msp: bool = False,
+        msp_module: OptConfigType = None,
         start_level: int = 0,
         end_level: int = -1,
         add_extra_convs: Union[bool, str] = False,
@@ -94,6 +96,11 @@ class FPN(BaseModule):
         self.no_norm_on_lateral = no_norm_on_lateral
         self.fp16_enabled = False
         self.upsample_cfg = upsample_cfg.copy()
+
+        # MSP configuration saved for later instantiation
+        self.use_msp = False
+        self._msp_cfg = msp_module
+        self._use_msp_flag = use_msp
 
         if end_level == -1 or end_level == self.num_ins - 1:
             self.backbone_end_level = self.num_ins
@@ -157,6 +164,28 @@ class FPN(BaseModule):
                     act_cfg=act_cfg,
                     inplace=False)
                 self.fpn_convs.append(extra_fpn_conv)
+        # optionally attach MSP reweighting module (use flags set in __init__)
+        if getattr(self, '_use_msp_flag', False):
+            self.use_msp = True
+            # if user provided a config for msp_module, build via registry
+            if getattr(self, '_msp_cfg', None) is not None:
+                try:
+                    self.msp_module = MODELS.build(self._msp_cfg)
+                except Exception:
+                    # fallback: try lazy import and instantiate default
+                    from mmdet.models.macldhnmsp.msp_module import MSPReweight
+                    try:
+                        self.msp_module = MSPReweight(channels=out_channels)
+                    except Exception:
+                        # final naive fallback
+                        self.msp_module = MSPReweight(channels=out_channels)
+            else:
+                # no config provided, instantiate default MSPReweight
+                from mmdet.models.macldhnmsp.msp_module import MSPReweight
+                try:
+                    self.msp_module = MSPReweight(channels=out_channels)
+                except Exception:
+                    self.msp_module = MSPReweight(channels=out_channels)
 
     def forward(self, inputs: Tuple[Tensor]) -> tuple:
         """Forward function.
@@ -218,4 +247,12 @@ class FPN(BaseModule):
                         outs.append(self.fpn_convs[i](F.relu(outs[-1])))
                     else:
                         outs.append(self.fpn_convs[i](outs[-1]))
+        # optionally apply MSP reweighting on output feature list
+        if getattr(self, 'use_msp', False):
+            try:
+                outs = self.msp_module(outs)
+            except Exception:
+                # If MSP module fails, keep original outs
+                pass
+
         return tuple(outs)

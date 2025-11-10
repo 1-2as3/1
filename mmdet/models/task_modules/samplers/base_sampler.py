@@ -102,6 +102,9 @@ class BaseSampler(metaclass=ABCMeta):
             if (isinstance(gt_bboxes, BaseBoxes)
                     and isinstance(priors, BaseBoxes)):
                 gt_bboxes_ = gt_bboxes.convert_to(type(priors))
+            elif isinstance(gt_bboxes, BaseBoxes) and isinstance(priors, torch.Tensor):
+                # Convert gt_bboxes to Tensor to match priors
+                gt_bboxes_ = gt_bboxes.tensor
             else:
                 gt_bboxes_ = gt_bboxes
             priors = cat_boxes([gt_bboxes_, priors], dim=0)

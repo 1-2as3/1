@@ -1,0 +1,7 @@
+[OK] mmdet version=3.0.0 path=c:\users\xinyu\mmdetection\mmdet\__init__.py
+[OK] mmengine version=0.9.1 path=C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\mmengine\__init__.py
+[OK] mmcv version=2.0.1 path=C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\mmcv\__init__.py
+[OK] mmdet.datasets.transforms imported. PackDetInputs symbols=['PackDetInputs']
+[SUGGEST] Full 3.x style pipelines available (PackDetInputs).
+[CHECK] AlignedRoIHead registered=True DomainAligner registered=True
+[DONE] Version probe complete.

@@ -25,3 +25,10 @@ assert (mmengine_version >= digit_version(mmengine_minimum_version)
     f'<{mmengine_maximum_version}.'
 
 __all__ = ['__version__', 'version_info', 'digit_version']
+
+# Force register dataset transforms (e.g., PackDetInputs) to avoid runtime
+# registry misses when only partial modules are imported by tools.
+try:
+    from .datasets import force_register as _force_register  # noqa: F401
+except Exception:
+    pass

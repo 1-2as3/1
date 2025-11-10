@@ -1,0 +1,71 @@
+# Remote training environment requirements (RTX 4090, CUDA toolkit 11.3, cuDNN 8.6.0)
+# Notes:
+# 1. PyTorch wheels bundle their own CUDA runtime (cu118). System CUDA 11.3 is fine as long as NVIDIA driver >= 525.xx.
+# 2. If driver is older and cannot load cu118, either upgrade driver or fall back to torch+cu117 (PyTorch 2.1) or compile from source.
+# 3. Pin versions for reproducibility. Remove pins if conflicts appear.
+# 4. mmcv 2.x 与 mmdet 3.x / 4.x 不同；本仓库为 mmdetection ≥3.0 结构，使用 mmcv 2.0.x / mmengine 0.9.x。
+# 5. 若需可选功能（Mask2Former, DiffusionDet 等）安装对应 extra packages（timm, fvcore, einops 等）已包含。
+
+# --- Core Framework ---
+torch==2.2.0+cu118        # pip install --index-url https://download.pytorch.org/whl/cu118 torch==2.2.0 torchvision==0.17.0 torchaudio==2.2.0
+torchvision==0.17.0+cu118
+torchaudio==2.2.0+cu118
+
+# --- OpenMMLab Stack ---
+mmengine==0.9.1
+mmcv==2.0.1               # Ensure CUDA ops compatible; if build error, try mmcv==2.0.0
+mmdet==3.3.0               # Adjust if repo tags differ
+mmpretrain==1.2.0          # For backbone weights management
+
+# --- Common Scientific ---
+numpy<2.0.0,>=1.24.0       # PyArrow 15.x requires numpy<2; torch 2.2 compatible with 1.x
+scipy==1.11.4
+pillow==10.3.0
+opencv-python==4.8.1.78
+matplotlib==3.8.4
+seaborn==0.13.2
+scikit-image==0.22.0
+scikit-learn==1.4.2
+pycocotools==2.0.7
+shapely==2.0.4
+tqdm==4.66.4
+
+# --- Detection / Geometry Extras ---
+lap==0.4.0                 # For MOT / optional bbox ops
+addict==2.4.0
+pyyaml==6.0.1
+packaging==24.0
+yapf==0.40.2
+termcolor==2.4.0
+Jinja2==3.1.4
+
+# --- Augmentation & Vision Extras ---
+albumentations==1.4.4
+imgaug==0.4.0
+timm==0.9.16               # For ConvNeXt / ViT variants
+einops==0.7.0
+fvcore==0.1.5.post20221221
+omegaconf==2.3.0
+filterpy==1.4.5
+
+# --- Optimization / Metrics ---
+pyarrow==15.0.2            # If dataset caching required
+pandas==2.2.2
+
+# --- Logging / Visualization ---
+tensorboard==2.16.2
+rich==13.7.1
+
+# --- Domain Adaptation / Statistical ---
+pot==0.9.3                 # Python Optimal Transport (MMD / OT experiments)
+
+# --- Misc Utilities ---
+psutil>=5.9.0,<6.0.0       # Relaxed pin; 5.9.8 may be unavailable on some PyPI mirrors
+future==1.0.0
+requests==2.32.3
+
+# --- Optional (remove if unused) ---
+# onnxruntime==1.17.3      # For ONNX export validation
+# pycuda==2022.1           # Only if custom CUDA kernels outside mmcv
+
+# If build wheels locally for mmcv with --no-binary mmcv, ensure CMAKE and CUDA toolkit installed.

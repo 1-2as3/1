@@ -1,0 +1,209 @@
+﻿python.exe : Traceback (most recent call last):
+所在位置 行:1 字符: 32
++ ... NG="utf-8"; & "C:\Users\Xinyu\.conda\envs\py311\python.exe" deep_chec ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\Xinyu\mmdetection\deep_check.py", line 314, in <module>
+    outputs = model(dummy_input, data_samples, mode='predict')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\torch\nn\modules\module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\mmdetection\mmdet\models\detectors\base.py", line 94, in forward
+    return self.predict(inputs, data_samples)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\mmdetection\mmdet\models\detectors\two_stage.py", line 331, in predict
+    results_list = self.roi_head.predict(
+                   ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\mmdetection\mmdet\models\roi_heads\base_roi_head.py", line 118, in predict
+    results_list = self.predict_bbox(
+                   ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\mmdetection\mmdet\models\roi_heads\standard_roi_head.py", line 646, in predict_bbox
+    result_list = self.bbox_head.predict_by_feat(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\mmdetection\mmdet\models\roi_heads\bbox_heads\bbox_head.py", line 465, in predict_by_feat
+    results = self._predict_by_feat_single(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\mmdetection\mmdet\models\roi_heads\bbox_heads\bbox_head.py", line 546, in _predict_by_feat_single
+    assert img_meta.get('scale_factor') is not None
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+================================================================================
+娣卞害妯″瀷妫€鏌ワ細鍙戠幇闅愯棌缂洪櫡
+================================================================================
+[RoIHead] modules active: MACL=True, MSP=True, DHN=True, DomainAlign=False
+  [OK] MACLHead initialized from config
+  [INFO] MSP module is typically handled by FPN neck
+  [INFO] DHN sampler is typically integrated in MACLHead
+
+================================================================================
+妫€鏌?1: 閰嶇疆鏂囦欢涓€鑷存€?
+================================================================================
+
+1.1 棰勮缁冩潈閲嶈矾寰? ./work_dirs/stage1_llvip_pretrain/epoch_latest.pth
+   鉂?鏂囦欢涓嶅瓨鍦紝璁粌灏嗕粠澶村紑濮嬶紒
+
+1.2 瀛︿範鐜囦笌鍐荤粨绛栫暐:
+   鍩虹瀛︿範鐜? 0.0003
+   Backbone lr_mult: 0.0
+   鉁?Backbone 宸插喕缁?
+
+1.3 璁粌杞暟: 12
+
+================================================================================
+妫€鏌?2: 妯″瀷鍙傛暟鐘舵€?
+================================================================================
+
+2.1 鍙傛暟鎬昏:
+   鎬诲弬鏁? 41,398,425 (41.40M)
+   鍙缁? 41,173,081 (41.17M)
+   鍐荤粨鐨? 225,344 (0.23M)
+
+2.2 鍚勬ā鍧楀弬鏁板垎甯?
+
+   BACKBONE:
+     鎬昏: 23,508,032 (23.51M)
+     鍙缁? 23,282,688 (23.28M)
+     鍐荤粨: 225,344 (0.23M)
+     鉂?鍙戠幇鍙缁冨弬鏁帮紙搴斿叏閮ㄥ喕缁擄級
+        - backbone.layer2.0.conv1.weight: 32,768
+        - backbone.layer2.0.bn1.weight: 128
+        - backbone.layer2.0.bn1.bias: 128
+        - backbone.layer2.0.conv2.weight: 147,456
+        - backbone.layer2.0.bn2.weight: 128
+     绀轰緥鍙傛暟:
+       - backbone.conv1.weight: 9,408 (鉁楀喕缁?
+       - backbone.bn1.weight: 64 (鉁楀喕缁?
+       - backbone.bn1.bias: 64 (鉁楀喕缁?
+
+   NECK:
+     鎬昏: 3,344,384 (3.34M)
+     鍙缁? 3,344,384 (3.34M)
+     鍐荤粨: 0 (0.00M)
+     绀轰緥鍙傛暟:
+       - neck.lateral_convs.0.conv.weight: 65,536 (鉁撳彲璁粌)
+       - neck.lateral_convs.0.conv.bias: 256 (鉁撳彲璁粌)
+       - neck.lateral_convs.1.conv.weight: 131,072 (鉁撳彲璁粌)
+
+   RPN:
+     鎬昏: 593,935 (0.59M)
+     鍙缁? 593,935 (0.59M)
+     鍐荤粨: 0 (0.00M)
+     绀轰緥鍙傛暟:
+       - rpn_head.rpn_conv.weight: 589,824 (鉁撳彲璁粌)
+       - rpn_head.rpn_conv.bias: 256 (鉁撳彲璁粌)
+       - rpn_head.rpn_cls.weight: 768 (鉁撳彲璁粌)
+
+   ROI_HEAD:
+     鎬昏: 13,901,830 (13.90M)
+     鍙缁? 13,901,830 (13.90M)
+     鍐荤粨: 0 (0.00M)
+     绀轰緥鍙傛暟:
+       - roi_head.bbox_head.fc_cls.weight: 2,048 (鉁撳彲璁粌)
+       - roi_head.bbox_head.fc_cls.bias: 2 (鉁撳彲璁粌)
+       - roi_head.bbox_head.fc_reg.weight: 4,096 (鉁撳彲璁粌)
+
+   MSP:
+     鎬昏: 515 (0.00M)
+     鍙缁? 515 (0.00M)
+     鍐荤粨: 0 (0.00M)
+     绀轰緥鍙傛暟:
+       - neck.msp_module.alpha: 1 (鉁撳彲璁粌)
+       - neck.msp_module.conv_avg.weight: 256 (鉁撳彲璁粌)
+       - neck.msp_module.conv_avg.bias: 1 (鉁撳彲璁粌)
+
+   MACL:
+     鎬昏: 49,729 (0.05M)
+     鍙缁? 49,729 (0.05M)
+     鍐荤粨: 0 (0.00M)
+     绀轰緥鍙傛暟:
+       - roi_head.macl_head.tau: 1 (鉁撳彲璁粌)
+       - roi_head.macl_head.proj.0.weight: 32,768 (鉁撳彲璁粌)
+       - roi_head.macl_head.proj.0.bias: 128 (鉁撳彲璁粌)
+
+================================================================================
+妫€鏌?3: 妯″潡瀹炰緥鍖栫姸鎬?
+================================================================================
+
+3.1 鍏抽敭妯″潡:
+   鉁?backbone: ResNet
+   鉁?neck: FPN
+   鉁?neck.msp_module: MSPReweight
+   鉁?rpn_head: RPNHead
+   鉁?roi_head: StandardRoIHead
+   鉁?roi_head.macl_head: MACLHead
+
+3.2 MSP 妯″潡閰嶇疆:
+   channels: 256
+   reduction: N/A
+   alpha (鍙涔?: 鍒濆鍊?0.5000
+
+3.3 MACL 妯″潡閰嶇疆:
+   in_dim: N/A
+   proj_dim: N/A
+   tau (鍙涔?: 鍒濆鍊?0.0700
+   use_dhn: True
+   DHN queue_size: 8192
+   DHN momentum: 0.99
+
+================================================================================
+妫€鏌?4: 鏁版嵁闆嗛厤缃?
+================================================================================
+
+4.1 TRAIN 鏁版嵁闆?
+   type: KAISTDataset
+   data_root: C:/KAIST_processed/
+   ann_file: C:/KAIST_processed/ImageSets/train.txt
+   return_modality_pair: False
+
+4.2 VAL 鏁版嵁闆?
+   type: KAISTDataset
+   data_root: C:/KAIST_processed/
+   ann_file: C:/KAIST_processed/ImageSets/val.txt
+   return_modality_pair: False
+
+4.3 TEST 鏁版嵁闆?
+   type: KAISTDataset
+   data_root: C:/KAIST_processed/
+   ann_file: C:/KAIST_processed/ImageSets/test.txt
+   return_modality_pair: False
+
+================================================================================
+妫€鏌?5: 鎹熷け鍑芥暟閰嶇疆
+================================================================================
+
+5.1 鎹熷け鏉冮噸:
+   lambda1 (MACL): 1.0
+   lambda2 (DHN): 0.5
+   lambda3 (Domain): 0.1
+
+================================================================================
+妫€鏌?6: 鍓嶅悜浼犳挱娴嬭瘯
+================================================================================
+
+6.1 鎺ㄧ悊娴嬭瘯 (batch_size=2):
+
+   鉂?鍓嶅悜娴嬭瘯澶辫触: 
+
+================================================================================
+闂姹囨€?
+================================================================================
+
+鍙戠幇 3 涓棶棰?
+
+1. 鉂?棰勮缁冩潈閲嶆枃浠朵笉瀛樺湪: ./work_dirs/stage1_llvip_pretrain/epoch_latest.pth
+2. 鉂?Backbone 鏈?23,282,688 涓彲璁粌鍙傛暟锛屽簲璇ュ叏閮ㄥ喕缁擄紒
+3. 鉂?鍓嶅悜浼犳挱娴嬭瘯澶辫触: 
+
+================================================================================
+寤鸿淇浼樺厛绾?
+================================================================================
+
+馃敶 涓ラ噸闂 (3):
+   鉂?棰勮缁冩潈閲嶆枃浠朵笉瀛樺湪: ./work_dirs/stage1_llvip_pretrain/epoch_latest.pth
+   鉂?Backbone 鏈?23,282,688 涓彲璁粌鍙傛暟锛屽簲璇ュ叏閮ㄥ喕缁擄紒
+   鉂?鍓嶅悜浼犳挱娴嬭瘯澶辫触: 
+
+================================================================================

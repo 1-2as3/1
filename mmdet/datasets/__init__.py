@@ -9,12 +9,17 @@ from .deepfashion import DeepFashionDataset
 from .lvis import LVISDataset, LVISV1Dataset, LVISV05Dataset
 from .objects365 import Objects365V1Dataset, Objects365V2Dataset
 from .openimages import OpenImagesChallengeDataset, OpenImagesDataset
-from .samplers import (AspectRatioBatchSampler, ClassAwareSampler,
-                       GroupMultiSourceSampler, MultiSourceSampler)
+from .samplers import (AspectRatioBatchSampler, BalancedModalitySampler,
+                       ClassAwareSampler, GroupMultiSourceSampler,
+                       MultiSourceSampler)
 from .utils import get_loading_pipeline
 from .voc import VOCDataset
 from .wider_face import WIDERFaceDataset
 from .xml_style import XMLDataset
+from .llvip_dataset import LLVIPDataset
+from .kaist_dataset import KAISTDataset
+from .m3fd_dataset import M3FDDataset
+from .paired_collate import paired_modality_collate
 
 __all__ = [
     'XMLDataset', 'CocoDataset', 'DeepFashionDataset', 'VOCDataset',
@@ -23,5 +28,6 @@ __all__ = [
     'MultiImageMixDataset', 'OpenImagesDataset', 'OpenImagesChallengeDataset',
     'AspectRatioBatchSampler', 'ClassAwareSampler', 'MultiSourceSampler',
     'GroupMultiSourceSampler', 'BaseDetDataset', 'CrowdHumanDataset',
-    'Objects365V1Dataset', 'Objects365V2Dataset'
+    'Objects365V1Dataset', 'Objects365V2Dataset', 'BalancedModalitySampler'
 ]
+__all__.extend(['LLVIPDataset', 'KAISTDataset', 'M3FDDataset', 'paired_modality_collate'])

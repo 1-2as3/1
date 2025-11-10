@@ -10,6 +10,7 @@ import torch.nn.functional as F
 from mmengine.dist import barrier, broadcast, get_dist_info
 from mmengine.logging import MessageHub
 from mmengine.model import BaseDataPreprocessor, ImgDataPreprocessor
+from mmengine.registry import MODELS as MMENGINE_MODELS
 from mmengine.structures import PixelData
 from mmengine.utils import is_seq_of
 from torch import Tensor
@@ -228,6 +229,9 @@ class BatchSyncRandomResize(nn.Module):
         super().__init__()
         self.rank, self.world_size = get_dist_info()
         self._input_size = None
+
+
+
         self._random_size_range = (round(random_size_range[0] / size_divisor),
                                    round(random_size_range[1] / size_divisor))
         self._interval = interval
@@ -288,6 +292,9 @@ class BatchSyncRandomResize(nn.Module):
             size = random.randint(*self._random_size_range)
             size = (self._size_divisor * size,
                     self._size_divisor * int(aspect_ratio * size))
+
+
+
             tensor[0] = size[0]
             tensor[1] = size[1]
         barrier()
@@ -630,6 +637,15 @@ class BatchResize(nn.Module):
                 data_sample.ignored_instances.bboxes *= scale
 
         return inputs, data_samples
+
+
+# Also register DetDataPreprocessor to mmengine's global MODEL registry
+# so mmengine::model.build can find it when constructing full detectors.
+try:
+    MMENGINE_MODELS.register_module()(DetDataPreprocessor)
+except Exception:
+    # If registration fails (unlikely), swallow to avoid breaking import.
+    pass
 
     def get_target_size(self, height: int,
                         width: int) -> Tuple[int, int, float]:
