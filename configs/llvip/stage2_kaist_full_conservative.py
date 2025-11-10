@@ -17,6 +17,19 @@
 - 解决：更低target(0.08) + 更长warmup(4 epochs) = 平滑过渡
 """
 
+# Explicitly import custom modules to ensure registry
+custom_imports = dict(
+    imports=[
+        'mmdet.models.data_preprocessors.paired_preprocessor',
+        'mmdet.models.macldhnmsp',
+        'mmdet.models.roi_heads.aligned_roi_head',
+        'mmdet.models.utils.domain_aligner',
+        'mmdet.engine.hooks.domain_weight_warmup_hook',
+        'mmdet.datasets.kaist'
+    ],
+    allow_failed_imports=False
+)
+
 from mmengine.config import read_base
 
 with read_base():
