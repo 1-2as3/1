@@ -1,57 +1,52 @@
+"""Improved preflight check.
+
+Build full Runner (so read_base + custom_imports are honored), fetch one batch,
+run forward(loss) under autocast (if fp16 enabled), and report basic stats.
+Usage:
+  python tools/preflight_check.py --cfg CONFIG_PATH
+"""
 import argparse
 import torch
 from mmengine import Config
-from mmdet.registry import MODELS
+from mmengine.runner import Runner
+from mmengine.utils import import_modules_from_strings
+from mmdet.utils import register_all_modules
 
-def list_frozen(model):
-    total, trainable = 0, 0
-    frozen = []
-    for n, p in model.named_parameters():
-        total += p.numel()
-        if p.requires_grad:
-            trainable += p.numel()
-        else:
-            frozen.append(n)
-    return total, trainable, frozen
-
-def try_amp_head(model):
-    roi_head = getattr(model, 'roi_head', None)
-    if roi_head is None or not hasattr(roi_head, 'macl_head'):
-        print('[preflight] Skip AMP head test: no macl_head')
-        return
-    head = roi_head.macl_head
-    in_dim = getattr(head.proj[0], 'in_features', 256)
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    head.to(device)
-    z_vis = torch.randn(16, in_dim, device=device)
-    z_ir = torch.randn(16, in_dim, device=device)
-    if device == 'cuda':
-        torch.cuda.reset_peak_memory_stats()
-    use_amp = torch.cuda.is_available()
-    ctx = torch.cuda.amp.autocast() if use_amp else torch.cpu.amp.autocast(enabled=False)
-    with ctx:
-        out = head(z_vis, z_ir)
-        loss = sum(v.mean() for v in out.values() if isinstance(v, torch.Tensor))
-    loss.backward() if loss.requires_grad else None
-    peak = torch.cuda.max_memory_allocated() if device=='cuda' else 0
-    print('[preflight] AMP test ok. Loss keys:', list(out.keys()))
-    if device=='cuda':
-        print('[preflight] CUDA peak memory (bytes):', int(peak))
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', required=True)
     args = parser.parse_args()
     cfg = Config.fromfile(args.cfg)
-    model = MODELS.build(cfg.model)
-    model.eval()
-    total, trainable, frozen = list_frozen(model)
-    print('[preflight] Total params: %.2fM, Trainable: %.2fM' % (total/1e6, trainable/1e6))
-    print('[preflight] Frozen tensors:', len(frozen))
-    print('[preflight] First 10 frozen names:')
-    for n in frozen[:10]:
-        print('  -', n)
-    try_amp_head(model)
+    # ensure mmdet registries populated (custom hooks etc.)
+    register_all_modules()
+    # explicitly import custom modules listed in config custom_imports (if any)
+    ci = cfg.get('custom_imports', None)
+    if ci:
+        import_modules_from_strings(ci.get('imports', []), allow_failed_imports=ci.get('allow_failed_imports', False))
+    runner = Runner.from_cfg(cfg)
+    model = runner.model
+    model.train()
+    total = sum(p.numel() for p in model.parameters())
+    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"[preflight] Params: total={total/1e6:.2f}M trainable={trainable/1e6:.2f}M frozen={(total-trainable)/1e6:.2f}M")
+    # Rebuild a simple single-worker DataLoader to avoid Windows worker spawn quirks during quick preflight
+    from torch.utils.data import DataLoader
+    td = runner.train_dataloader
+    batch = next(iter(DataLoader(td.dataset, batch_size=td.batch_size, shuffle=False,
+                                 collate_fn=td.collate_fn, num_workers=0)))
+    device = next(model.parameters()).device
+    use_fp16 = bool(getattr(runner, 'fp16', None)) or 'fp16' in cfg
+    ctx = torch.cuda.amp.autocast(enabled=use_fp16 and torch.cuda.is_available())
+    with ctx:
+        out = model.train_step(batch)  # returns dict of losses
+    print('[preflight] Loss keys:', list(out.keys()))
+    print('[preflight] Batch keys:', list(batch.keys()))
+    if 'data_samples' in batch:
+        ds0 = batch['data_samples'][0]
+        print('[preflight] First sample keys:', ds0._meta_info_keys())
+    print('[OK] Preflight passed.')
+
 
 if __name__ == '__main__':
     main()

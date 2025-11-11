@@ -8,9 +8,9 @@ from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
+from mmengine.utils import import_modules_from_strings
 
-from mmdet.utils import setup_cache_size_limit_of_dynamo
-from mmdet.utils import register_all_modules
+from mmdet.utils import setup_cache_size_limit_of_dynamo, register_all_modules
 
 
 def parse_args():
@@ -67,20 +67,21 @@ def main():
     # training speed.
     setup_cache_size_limit_of_dynamo()
 
-    # Ensure all mmdet modules (datasets/transforms/hooks) are registered
-    # so that pipeline entries like PackDetInputs are available.
-    try:
-        register_all_modules(init_default_scope=True)
-    except Exception as _e:
-        print_log(
-            f"[WARN] register_all_modules failed early, continue: {_e}",
-            logger='current')
-
     # load config
     cfg = Config.fromfile(args.config)
     cfg.launcher = args.launcher
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
+
+    # Ensure all mmdet modules (including custom hooks) are registered
+    register_all_modules()
+    # Import custom modules specified in config (e.g., custom hooks, datasets)
+    custom_imports = cfg.get('custom_imports', None)
+    if custom_imports:
+        import_modules_from_strings(
+            custom_imports.get('imports', []),
+            allow_failed_imports=custom_imports.get('allow_failed_imports', False)
+        )
 
     # work_dir is determined in this priority: CLI > segment in file > filename
     if args.work_dir is not None:

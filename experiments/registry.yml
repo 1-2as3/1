@@ -1,0 +1,13 @@
+# Experiment registry
+# Add new curriculum configs here for automation / tracking
+curriculum:
+  - name: stage2_1_detonly
+    path: configs/llvip/stage2_1_kaist_detonly.py
+    phase: 1
+    description: Detection-only stabilization (lambda1=0.05)
+    early_stop: true
+  - name: stage2_2_contrastive
+    path: configs/llvip/stage2_2_kaist_contrastive.py
+    phase: 2
+    description: Enable MACL + DHN + domain with warmups
+    depends_on: stage2_1_detonly
