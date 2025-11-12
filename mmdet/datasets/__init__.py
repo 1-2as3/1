@@ -19,7 +19,6 @@ from .xml_style import XMLDataset
 from .llvip_dataset import LLVIPDataset
 from .kaist_dataset import KAISTDataset
 from .m3fd_dataset import M3FDDataset
-from .paired_collate import paired_modality_collate
 
 __all__ = [
     'XMLDataset', 'CocoDataset', 'DeepFashionDataset', 'VOCDataset',
@@ -30,4 +29,4 @@ __all__ = [
     'GroupMultiSourceSampler', 'BaseDetDataset', 'CrowdHumanDataset',
     'Objects365V1Dataset', 'Objects365V2Dataset', 'BalancedModalitySampler'
 ]
-__all__.extend(['LLVIPDataset', 'KAISTDataset', 'M3FDDataset', 'paired_modality_collate'])
+__all__.extend(['LLVIPDataset', 'KAISTDataset', 'M3FDDataset'])

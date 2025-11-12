@@ -14,6 +14,7 @@ from .sync_norm_hook import SyncNormHook
 from .tsne_visual_hook import TSNEVisualHook
 from .domain_weight_warmup_hook import DomainWeightWarmupHook
 from .dhn_schedule_hook import DHNScheduleHook
+from .gradient_monitor_hook import GradientMonitorHook
 from .update_epoch_hook import UpdateEpochHook
 from .utils import trigger_visualization_hook
 from .visualization_hook import DetVisualizationHook
@@ -25,5 +26,5 @@ __all__ = [
     'NumClassCheckHook', 'MeanTeacherHook', 'trigger_visualization_hook',
     'PipelineSwitchHook', 'ParameterMonitorHook', 'DomainAdaptationHook',
     'UpdateEpochHook', 'MetricsExportHook', 'TSNEVisualHook', 'FreezeMonitorHook',
-    'FreezeBackboneHook', 'DHNScheduleHook', 'DomainWeightWarmupHook'
+    'FreezeBackboneHook', 'DHNScheduleHook', 'DomainWeightWarmupHook', 'GradientMonitorHook'
 ]

@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "C:\Users\Xinyu\mmdetection\tools\train.py", line 161, in <module>
+    main()
+  File "C:\Users\Xinyu\mmdetection\tools\train.py", line 71, in main
+    cfg = Config.fromfile(args.config)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\mmengine\config\config.py", line 456, in fromfile
+    lazy_import is None and not Config._is_lazy_import(filename):
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Xinyu\.conda\envs\py311\Lib\site-packages\mmengine\config\config.py", line 1655, in _is_lazy_import
+    with open(filename, encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'configs/your_config.py'

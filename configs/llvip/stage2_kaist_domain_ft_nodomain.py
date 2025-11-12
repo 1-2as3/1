@@ -51,7 +51,7 @@ model = dict(
 )
 
 # ========== 加载阶段一模型 ==========
-load_from = 'work_dirs/stage1_longrun_full/epoch_21.pth'
+load_from = './work_dirs/stage1_llvip_pretrain/epoch_latest.pth'
 
 # ========== 优化器配置（冻结 backbone，降低学习率）==========
 optim_wrapper = dict(

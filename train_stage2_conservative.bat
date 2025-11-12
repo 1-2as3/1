@@ -21,7 +21,7 @@ set timestamp=%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2
 set timestamp=%timestamp: =0%
 
 REM Run training with output redirection
-echo Starting training at %date% %time% > logs\stage2_conservative_%timestamp%.log
+echo Starting training at %date% %time% > logs\stage2_conservative_%timestamp%.log 
 python -u tools\train.py ^
     configs\llvip\stage2_kaist_full_conservative.py ^
     --work-dir work_dirs\stage2_kaist_full_conservative ^

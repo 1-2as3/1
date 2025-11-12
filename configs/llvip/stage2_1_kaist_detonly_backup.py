@@ -45,38 +45,35 @@ model['neck'].update(dict(use_msp=False))
 # Extend roi_head with curriculum flags & MACL head; retain base extractor/head
 model['roi_head']['bbox_head']['num_classes'] = 1
 model['roi_head'].update(dict(
-    use_macl=False,     # ✅ DISABLED: Pure detection stabilization
+    use_macl=True,      # small MACL to preserve modality robustness gently
     use_msp=False,
     use_dhn=False,
     use_domain_alignment=False,
-    lambda1=0.0,        # ✅ Zero contrastive loss
+    lambda1=0.05,  # MACL small weight
     lambda2=0.0,
     lambda3=0.0,
 ))
-# Remove MACL head since use_macl=False
-# model['roi_head']['macl_head'] = dict(
-#     type='MACLHead',
-#     in_dim=256,
-#     proj_dim=128,
-#     temperature=0.07,
-#     use_dhn=False,
-# )
+model['roi_head']['macl_head'] = dict(
+    type='MACLHead',
+    in_dim=256,
+    proj_dim=128,
+    temperature=0.07,
+    use_dhn=False,
+)
 
 optim_wrapper = dict(
-    type='OptimWrapper',
-    optimizer=dict(type='AdamW', lr=5e-5, weight_decay=0.005),  # ✅ Reduced from 1e-4
+    optimizer=dict(type='AdamW', lr=1e-4, weight_decay=0.01),
     paramwise_cfg=dict(
         custom_keys={'backbone': dict(lr_mult=0.1)}
-    ),
-    clip_grad=dict(max_norm=3.0, norm_type=2)  # ✅ Gradient clipping for stability
+    )
 )
 
 param_scheduler = [
     dict(type='LinearLR', begin=0, end=200, by_epoch=False, start_factor=0.001),
-    dict(type='CosineAnnealingLR', begin=1, end=5, by_epoch=True, eta_min=1e-6),  # ✅ 5 epochs
+    dict(type='CosineAnnealingLR', begin=1, end=8, by_epoch=True, eta_min=1e-5),
 ]
 
-train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=5, val_interval=1)  # ✅ Short recovery run
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=8, val_interval=1)
 
 # Dataset (KAIST VOC)
 dataset_type = 'KAISTDataset'
@@ -127,25 +124,12 @@ val_dataloader = dict(
 val_evaluator = dict(type='VOCMetric', metric='mAP', eval_mode='11points')
 
 custom_hooks = [
-    dict(
-        type='EarlyStopHook', 
-        metric='pascal_voc/mAP', 
-        threshold=0.60,  # ✅ Raised from 0.55 to react faster
-        patience=2,      # ✅ Reduced from 3 to 2
-        begin=1,         # ✅ Start monitoring from epoch 1
-        verbose=True
-    )
+    dict(type='EarlyStopHook', metric='pascal_voc/mAP', threshold=0.55, patience=3, begin=2, verbose=True)
 ]
 
 default_hooks = dict(
-    checkpoint=dict(
-        type='CheckpointHook', 
-        interval=1, 
-        max_keep_ckpts=3,  # ✅ Keep last 3 checkpoints
-        save_best='pascal_voc/mAP', 
-        rule='greater'
-    ),
-    logger=dict(type='LoggerHook', interval=20)  # ✅ More frequent logging
+    checkpoint=dict(type='CheckpointHook', interval=1, save_best='pascal_voc/mAP', rule='greater'),
+    logger=dict(type='LoggerHook', interval=50)
 )
 
 work_dir = './work_dirs/stage2_1_kaist_detonly'
