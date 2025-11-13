@@ -65,6 +65,15 @@ class PairedDetDataPreprocessor(DetDataPreprocessor):
             and data_samples[0].infrared_img is not None
         )
         
+        # [DEBUG] Print on first forward call
+        if not hasattr(self, '_debug_printed'):
+            self._debug_printed = True
+            print(f"[PairedDetDataPreprocessor.forward] has_infrared={has_infrared}")
+            if data_samples and len(data_samples) > 0:
+                print(f"  data_samples[0] has infrared_img attr: {hasattr(data_samples[0], 'infrared_img')}")
+                if hasattr(data_samples[0], 'infrared_img'):
+                    print(f"  infrared_img is None: {data_samples[0].infrared_img is None}")
+        
         if has_infrared:
             # Extract infrared images from data_samples
             infrared_inputs = [sample.infrared_img for sample in data_samples]

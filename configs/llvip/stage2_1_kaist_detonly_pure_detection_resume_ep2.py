@@ -19,7 +19,6 @@ custom_imports = dict(
 
 with read_base():
     from .._base_.models.faster_rcnn_r50_fpn import *  # noqa
-    from .._base_.schedules.schedule_1x import *  # noqa
     from .._base_.default_runtime import *  # noqa
 
 # Load from best epoch 2
@@ -93,10 +92,10 @@ val_cfg = dict(type='ValLoop')
 test_cfg = None
 
 # Optimizer: Constant LR for stability (no cosine)
+# IMPORTANT: Do NOT import base schedule to avoid inheriting SGD momentum.
 optim_wrapper = dict(
     type='OptimWrapper',
     optimizer=dict(
-        _delete_=True,
         type='AdamW',
         lr=4e-5,  # slightly higher floor than epoch 4's 2.55e-5
         betas=(0.9, 0.999),

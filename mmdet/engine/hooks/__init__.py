@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .checkloss_hook import CheckInvalidLossHook
 from .domain_adaptation_hook import DomainAdaptationHook
+from .early_stop_hook import EarlyStopHook
 from .freeze_monitor_hook import FreezeMonitorHook
 from .freeze_backbone_hook import FreezeBackboneHook
 from .mean_teacher_hook import MeanTeacherHook
@@ -26,5 +27,6 @@ __all__ = [
     'NumClassCheckHook', 'MeanTeacherHook', 'trigger_visualization_hook',
     'PipelineSwitchHook', 'ParameterMonitorHook', 'DomainAdaptationHook',
     'UpdateEpochHook', 'MetricsExportHook', 'TSNEVisualHook', 'FreezeMonitorHook',
-    'FreezeBackboneHook', 'DHNScheduleHook', 'DomainWeightWarmupHook', 'GradientMonitorHook'
+    'FreezeBackboneHook', 'DHNScheduleHook', 'DomainWeightWarmupHook', 'GradientMonitorHook',
+    'EarlyStopHook'
 ]

@@ -111,6 +111,10 @@ class KAISTDataset(VOCDataset):
             dict: Training/test data with modality information.
                   If return_modality_pair=True, includes both modalities.
         """
+        # [DEBUG] Print mode for first few samples
+        if idx < 3:
+            print(f"[KAISTDataset.__getitem__] idx={idx}, return_modality_pair={self.return_modality_pair}")
+        
         if not self.return_modality_pair:
             # Standard single-modality mode
             data = super().__getitem__(idx)
@@ -148,7 +152,11 @@ class KAISTDataset(VOCDataset):
         """
         import copy
         
-        # Get the base data info (will be for visible or infrared depending on idx)
+        # [DEBUG] Print for first few calls
+        if idx < 3:
+            print(f"[KAISTDataset._get_paired_data] Called for idx={idx}")
+        
+        # Get base sample info (visible)
         data_info = self.get_data_info(idx)
         base_id = data_info['base_id']
         
@@ -186,8 +194,19 @@ class KAISTDataset(VOCDataset):
         # Attach infrared image tensor to visible results' data_samples
         # This allows the detector to access both modalities
         if 'data_samples' in visible_results and 'inputs' in infrared_results:
+            # [DEBUG] Print for first few calls
+            if idx < 3:
+                print(f"[KAISTDataset._get_paired_data] Attaching infrared_img for idx={idx}, shape={infrared_results['inputs'].shape if hasattr(infrared_results['inputs'], 'shape') else 'N/A'}")
+            
             visible_results['data_samples'].infrared_img = infrared_results['inputs']
             visible_results['data_samples'].metainfo['modality'] = 'paired'
             visible_results['data_samples'].metainfo['base_id'] = base_id
+            
+            # [DEBUG] Verify attachment
+            if idx < 3:
+                has_it = hasattr(visible_results['data_samples'], 'infrared_img')
+                print(f"[KAISTDataset._get_paired_data] Verification: has infrared_img = {has_it}")
+                if has_it:
+                    print(f"                                  infrared_img id = {id(visible_results['data_samples'].infrared_img)}")
         
         return visible_results

@@ -1,0 +1,201 @@
+# ============================================================================
+#  Plan C Linux Training - Quick Reference Card
+# ============================================================================
+
+## 📋 One-Command Setup
+```bash
+bash setup_planC.sh /path/to/kaist ./work_dirs/stage1/epoch_48.pth
+```
+
+## 🚀 Training Commands
+
+### Single GPU (Simplest)
+```bash
+bash train_planC.sh
+```
+
+### Single GPU (Specify GPU and directories)
+```bash
+bash train_planC.sh 0 config_planC_linux.py work_dirs/planC_exp1
+```
+
+### Multi-GPU (Recommended for speed)
+```bash
+# 2 GPUs
+bash train_planC.sh 0,1
+
+# 4 GPUs  
+bash train_planC.sh 0,1,2,3
+
+# Custom work directory
+bash train_planC.sh 0,1 config_planC_linux.py work_dirs/planC_2gpu
+```
+
+## 🔍 Monitoring Commands
+
+### View Training Progress
+```bash
+# Real-time log
+tail -f work_dirs/planC_linux/train_*.log
+
+# Watch mAP
+watch -n 10 "grep 'coco/bbox_mAP' work_dirs/planC_linux/train_*.log | tail -5"
+
+# Check MACL loss
+grep "loss_macl" work_dirs/planC_linux/train_*.log | tail -20
+```
+
+### TensorBoard
+```bash
+tensorboard --logdir=work_dirs/planC_linux --port=6006
+# Open: http://localhost:6006
+```
+
+### GPU Usage
+```bash
+watch -n 1 nvidia-smi
+```
+
+## 🧪 Testing Commands
+
+### Smoke Test
+```bash
+python test_dual_modality.py config_planC_linux.py
+```
+
+### Full Evaluation
+```bash
+python tools/test.py \
+    config_planC_linux.py \
+    work_dirs/planC_linux/epoch_12.pth
+```
+
+### Inference on Images
+```bash
+python demo/image_demo.py \
+    /path/to/test_image.jpg \
+    config_planC_linux.py \
+    work_dirs/planC_linux/best_checkpoint.pth \
+    --out-dir visualizations/
+```
+
+## 🔧 Common Fixes
+
+### CUDA OOM Error
+```python
+# In config_planC_linux.py, reduce:
+batch_size = 4  ->  batch_size = 2
+```
+
+### Training Hangs
+```python
+# Reduce workers:
+num_workers = 6  ->  num_workers = 2
+```
+
+### loss_macl = 0.0000
+```bash
+# Check dual-modality loading:
+python test_dual_modality.py config_planC_linux.py
+
+# Verify config:
+grep "return_modality_pair" config_planC_linux.py
+# Should show: return_modality_pair=True (twice)
+```
+
+### Multi-GPU Issues
+```bash
+# Use explicit environment:
+MASTER_ADDR=localhost MASTER_PORT=29500 \
+bash train_planC.sh 0,1 config_planC_linux.py work_dirs/planC
+```
+
+## 📊 Expected Metrics
+
+### Training Progress
+| Epoch | loss | loss_cls | loss_bbox | loss_macl | mAP |
+|-------|------|----------|-----------|-----------|-----|
+| 1 | 1.23 | 0.45 | 0.67 | 0.11 | 0.53 |
+| 5 | 0.89 | 0.32 | 0.48 | 0.09 | 0.57 |
+| 10 | 0.71 | 0.26 | 0.38 | 0.07 | 0.60 |
+| 15 | 0.65 | 0.24 | 0.35 | 0.06 | 0.62 |
+
+### Success Indicators
+✓ loss_macl appears and decreases (0.3 -> 0.06)
+✓ mAP improves from 0.53 to 0.60+
+✓ No OOM or hang issues
+✓ Training completes in 2-3 hours (single GPU)
+
+## 🗂️ Key File Locations
+
+### Configuration
+- `config_planC_linux.py` - Main training config
+- Lines 21, 37, 53 - Dataset paths
+- Line 243 - Checkpoint path
+- Line 140-150 - MACL parameters
+
+### Outputs
+- `work_dirs/planC_linux/train_*.log` - Training logs
+- `work_dirs/planC_linux/epoch_*.pth` - Model checkpoints
+- `work_dirs/planC_linux/vis_data/` - TensorBoard logs
+- `work_dirs/planC_linux/*.json` - Evaluation results
+
+### Scripts
+- `train_planC.sh` - Training launcher
+- `setup_planC.sh` - Auto-configuration
+- `test_dual_modality.py` - Data loading test
+
+## 💡 Pro Tips
+
+1. **Before training**: Always run smoke test first
+   ```bash
+   python test_dual_modality.py config_planC_linux.py
+   ```
+
+2. **Monitor MACL**: Check loss_macl in first epoch
+   ```bash
+   grep "Epoch \[1\]" work_dirs/planC_linux/train_*.log | grep loss_macl
+   ```
+
+3. **Early stopping**: Training stops if mAP < 0.40 for 3 epochs (safety feature)
+
+4. **Best checkpoint**: Auto-saved when mAP improves
+   ```bash
+   ls -lh work_dirs/planC_linux/best_*.pth
+   ```
+
+5. **Multi-GPU speed**: 2x GPUs = ~1.7x faster (not 2x due to communication overhead)
+
+## 📞 Quick Diagnostics
+
+### Is training working?
+```bash
+# Check if loss_macl > 0
+head -100 work_dirs/planC_linux/train_*.log | grep loss_macl
+```
+
+### Is dual-modality loading?
+```bash
+# Should see "infrared_img tensor" in smoke test
+python test_dual_modality.py config_planC_linux.py | grep infrared
+```
+
+### Are GPUs being used?
+```bash
+# Should show 80%+ GPU utilization during training
+nvidia-smi --query-gpu=utilization.gpu --format=csv --loop=1
+```
+
+## 🎯 Target Achievement
+
+**Goal**: mAP >= 0.60 (improving from 0.53 baseline)
+
+**Method**: Dual-modality MACL (cross-modal contrastive learning)
+
+**Validation**: Check epoch logs for increasing mAP trend
+
+**Timeline**: ~15 epochs, 2-3 hours on single RTX 3090
+
+---
+**Last Updated**: 2025-01-15
+**Support**: See README_DEPLOYMENT.md for detailed troubleshooting
