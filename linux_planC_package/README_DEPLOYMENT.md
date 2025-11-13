@@ -1,6 +1,23 @@
 # Plan C Linux Deployment Guide
 # ============================================================================
 
+## ⚠️ 遇到路径错误? 查看 [QUICK_FIX.md](QUICK_FIX.md)
+
+如果看到:
+```
+❌ ERROR: Checkpoint not found
+❌ ERROR: Data root not found
+```
+
+**最快解决方案:**
+```bash
+bash configure_wizard.sh  # 自动发现并配置所有路径
+```
+
+详细说明请看 `QUICK_FIX.md` 或 `PATH_TROUBLESHOOTING.md`
+
+---
+
 ## 📦 Package Contents
 
 ```
